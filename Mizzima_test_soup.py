@@ -98,4 +98,4 @@ with open("/Users/htutlinaung/Desktop/OCR/Mizzima_data.csv" , "w", encoding='utf
     writer = csv.writer(WR)
     for item in extracted_content:
         writer.writerow([item]) # Need to add [] for item because without it,
-                                # writer will store each charaters and syllables as a column
+                                # the writer function will store each charaters and syllables as a column
