@@ -28,53 +28,45 @@ urls = [
     "http://www.mizzimaburmese.com/article/24452",
 ]
 
-print(urls[0])
-
 for url in urls:
     extracted_content = []
 
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     page_html = urlopen(req).read()
     page_soup = soup(page_html, "html.parser")
-    date_container = page_soup.findAll("span", {"class": "date-display-single"})
+    date_container = page_soup.findAll(
+        "span", {"class": "date-display-single"})
 
     if date_container == []:
         break
 
     date = date_container[0].text
 
-    headtext_container = page_soup.findAll("div", {"class":"news-details-title"})
+    headtext_container = page_soup.findAll(
+        "div", {"class": "news-details-title"})
 
     if headtext_container == []:
         break
-    
+
     headtext = headtext_container[0].text
     extracted_content.append(str(headtext))
 
-    bodytext_container = page_soup.find("div", {"class" : "field-item even"} , {"property" : "content:encoded"})
-    
+    bodytext_container = page_soup.find(
+        "div", {"class": "field-item even"}, {"property": "content:encoded"})
+
     if bodytext_container == []:
         break
-    
+
     [s.extract() for s in bodytext_container('script')]
     [s.extract() for s in bodytext_container('div')]
 
-    bodytext_container = bodytext_container.find_all("p", {"class":None})
+    bodytext_container = bodytext_container.find_all("p", {"class": None})
 
     for body in bodytext_container:
         extracted_content.append(str(body.text))
 
-    extracted_content.append(str(date))
-    with open("C:\myanmar-website-crawlers\Mizzima_20pages_data.csv", "a", encoding= 'utf-8') as WR:
+    #extracted_content.append(str(date)) # Don't want to add date: Eng language
+    with open("C:\myanmar-website-crawlers\Mizzima_20pages_data.csv", "a", encoding='utf-8') as WR:
         writer = csv.writer(WR)
         for item in extracted_content:
             writer.writerow([item])
-
-
-
-
-
-
-    
-
-

@@ -5,7 +5,8 @@ import csv
 import sys
 
 # Put the desired url or website into the variable
-my_url = "http://www.mizzimaburmese.com/article/52168"
+# my_url = "http://www.mizzimaburmese.com/article/52168"
+my_url = "http://www.mizzimaburmese.com/article/53173"
 
 # pre-build a free list for final extracted content
 extracted_content = []
@@ -45,7 +46,7 @@ date_container = page_soup.findAll("span", {"class": "date-display-single"})
 # In case there is no matched item, then exit!
 if date_container == []:
     print("There's no item in the soup_container")
-    sys.exit() # Alternative : if not date_container: works too
+    sys.exit()  # Alternative : if not date_container: works too
 
 # For accessing the date within the soup data structure, we need use index beacuse
 # Sometimes it can have multiple values
@@ -57,22 +58,23 @@ date = date_container[0].text
 
 # Extract the Headtext from the tag
 # And dump the information into the headtext_container
-headtext_container = page_soup.findAll("div", {"class":"news-details-title"})
+headtext_container = page_soup.findAll("div", {"class": "news-details-title"})
 
 # In case there's no item in the headtext_container
 if headtext_container == []:
     print("There is no item in teh bodytext_container")
-    sys.exit() # break only works within loop so we need to use sys.exit() instead
+    sys.exit()  # break only works within loop so we need to use sys.exit() instead
 
 headtext = headtext_container[0].text
 
-#print(str(headtext))
+# print(str(headtext))
 # append the headtext into extracted_content
 extracted_content.append(str(headtext))
 
 # Extract the main article from the tag
 # And dump the information into the bodytext_container
-bodytext_container = page_soup.find("div", {"class" : "field-item even"} , {"property" : "content:encoded"})
+bodytext_container = page_soup.find(
+    "div", {"class": "field-item even"}, {"property": "content:encoded"})
 
 # In case there's  no matched item, then exit!
 if bodytext_container == []:
@@ -84,7 +86,7 @@ if bodytext_container == []:
 [s.extract() for s in bodytext_container('script')]
 [s.extract() for s in bodytext_container('div')]
 
-bodytext_container = bodytext_container.find_all("p", {"class":None})
+bodytext_container = bodytext_container.find_all("p", {"class": None})
 
 # And save the information into extracted_content by loop
 for body in bodytext_container:
@@ -94,8 +96,8 @@ for body in bodytext_container:
 extracted_content.append(str(date))
 
 # Write the extracted content into csv file
-with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/Mizzima_data.csv" , "w", encoding='utf-8') as WR:
+with open("C:\myanmar-website-crawlers\Mizzima_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
     for item in extracted_content:
-        writer.writerow([item]) # Need to add [] for item because without it,
-                                # the writer function will store each charaters and syllables as a column
+        writer.writerow([item])  # Need to add [] for item because without it,
+        # the writer function will store each charaters and syllables as a column
