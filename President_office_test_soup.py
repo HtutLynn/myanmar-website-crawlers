@@ -47,13 +47,14 @@ if headtext_container == []:
     sys.exit()
 
 # add the scraped text into final extracted content
-extracted_content.append(str(headtext_container[0].text))
+for headtext in headtext_container:
+    extracted_content.append(str(headtext.text))
 
 # President office website has all main contents including date under a div
 # Extract the all contents from the tag
 # And dump the information into content_container
 # There are many tag with "class" : "field-item even" so just use preoperty tag to filter
-content_container = page_soup.findAll("div", {"property": "content:encoded"})
+content_container = page_soup.find("div", {"property": "content:encoded"})
 
 # In case there's no matched item, then exit!
 if content_container == []:
@@ -64,12 +65,17 @@ if content_container == []:
 # all <p> don't have class so assign it None
 content_container = content_container.find_all("p", {"class": None})
 
+# print(content_container)
+
 # And save the information into extracted_content by loop
 for content in content_container:
     extracted_content.append(str(content.text))
 
+# The first <p> in body content is always empty so delete it
+del extracted_content[1]
+
 # Write the extracted content into csv file
-with open("/Users/htutlinaung/Desktop/OCR/President_office_data.csv", "w", encoding='utf-8') as WR:
+with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/President_office_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
     for item in extracted_content:
         writer.writerow([item])  # Need to add [] for item because without it,

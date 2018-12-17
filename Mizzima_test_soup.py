@@ -94,10 +94,8 @@ for body in bodytext_container:
 extracted_content.append(str(date))
 
 # Write the extracted content into csv file
-with open("/Users/htutlinaung/Desktop/OCR/Mizzima_data.csv" , "w", encoding='utf-8') as WR:
+with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/Mizzima_data.csv" , "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
     for item in extracted_content:
         writer.writerow([item]) # Need to add [] for item because without it,
                                 # the writer function will store each charaters and syllables as a column
-
-# HELLO FUCKER!!!
