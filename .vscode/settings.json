@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/anaconda3/envs/OCR/bin/python",
+    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\OCR\\python.exe",
     "python.linting.pylintEnabled": true
 }
