@@ -5,8 +5,7 @@ import csv
 import sys
 
 # Put the desired url or website into the variable
-my_url = "http://www.president-office.gov.mm/?q=briefing-room/news/2018/12/15/id-14831"
-
+my_url = "https://news-eleven.com/article/62971"
 # pre-build a free list for final extracted content
 extracted_content = []
 
@@ -38,8 +37,8 @@ page_soup = soup(page_html, "html.parser")
 # For that, we need to use findAll function fory all desired html tag : <div> for example
 # using just page_soup.div will only give the first one div tag
 
-# The headtext of the article in president website is in <h1> so extract that
-headtext_container = page_soup.findAll("h1", {"class": "page-title"})
+# The headtext of the Eleven articles is in <h1> so extract that
+headtext_container = page_soup.findAll("div", {"class": "news-detail-title"})
 
 # In case there's no matched item, then exit!
 if headtext_container == []:
@@ -50,8 +49,18 @@ if headtext_container == []:
 for headtext in headtext_container:
     extracted_content.append(str(headtext.text))
 
-# President office website has all main contents including date under a div
-# Extract the all contents from the tag
+# For the author name, it's in burmese so it's scrape target
+author_container = page_soup.findAll("div", {"class" : "news-detail-date-author-info-author"})
+
+if author_container == []:
+    print("There's no item in author_container")
+    sys.exit()
+
+# In case there's no matched item in author container
+for author in author_container:
+    extracted_content.append(str(author.text))
+
+# Extract the all contents from the div tag
 # And dump the information into content_container
 # There are many tag with "class" : "field-item even" so just use preoperty tag to filter
 content_container = page_soup.find("div", {"property": "content:encoded"})
@@ -61,19 +70,31 @@ if content_container == []:
     print("There's no item in the content_container")
     sys.exit()  # Alternative : if not date_container: works too
 
+#Delete all div tag mixed within <p> tags
+[s.extract() for s in content_container('div')]
+
 # all tag within the filtered tags are all <p> so select them all to scrape
 # all <p> don't have class so assign it None
 content_container = content_container.find_all("p", {"class": None})
 
-# And save the information into extracted_content by loop
+# The resulted data structure after find_all is Resultset which is a sub function of list
+# After finding all p, the ResultSet somehow duplicated the body part
+# except first line and so it becomes four parts list-like-result-set
+# I have to chose the first line + one of the best duplicate content text
+# So I decided to choose 2 and delete the other 3
+# Really stupid bug !!!!!!!
+# I don't know if it's the developer's fault or the bug of beautifulsoup
+del content_container[1]
+del content_container[3]
+
 for content in content_container:
     extracted_content.append(str(content.text))
 
-# The first <p> in body content is always empty so delete it
-del extracted_content[1]
+# deleting the empty content in finalized list which is about to write
+# extracted_content = list(filter(None,extracted_content))
 
 # Write the extracted content into csv file
-with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/President_office_data.csv", "w", encoding='utf-8') as WR:
+with open("C:\myanmar-website-crawlers\Eleven_data.csv", "w", newline='' ,encoding='utf-8') as WR:
     writer = csv.writer(WR)
     for item in extracted_content:
         writer.writerow([item])  # Need to add [] for item because without it,

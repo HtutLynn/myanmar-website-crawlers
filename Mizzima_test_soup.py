@@ -95,6 +95,9 @@ for body in bodytext_container:
 # append the date into final extracted content
 extracted_content.append(str(date))
 
+# deleting the empty content in finalized list which is about to write
+extracted_content = list(filter(None,extracted_content))
+
 # Write the extracted content into csv file
 with open("C:\myanmar-website-crawlers\Mizzima_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
