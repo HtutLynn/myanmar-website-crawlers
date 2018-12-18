@@ -1,8 +1,13 @@
 import bs4
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup as soup
+from fake_useragent import UserAgent
 import csv
 import sys
+
+ua = UserAgent()
+headers = {'User-Agent': str(ua.random)}
+print(headers)
 
 urls = [
     "http://www.mizzimaburmese.com/article/53173",
@@ -29,9 +34,11 @@ urls = [
 ]
 
 for url in urls:
+    
+    print("Processing {}".format(url))
     extracted_content = []
 
-    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    req = Request(url, headers)
     page_html = urlopen(req).read()
     page_soup = soup(page_html, "html.parser")
     date_container = page_soup.findAll(
