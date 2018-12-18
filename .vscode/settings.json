@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\OCR\\python.exe",
+    "python.pythonPath": "/anaconda3/envs/OCR/bin/python",
     "python.linting.pylintEnabled": true,
     "python.unitTest.unittestArgs": [
         "-v",
@@ -10,5 +10,6 @@
     ],
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
-    "python.unitTest.unittestEnabled": true
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.promptToConfigure": false
 }

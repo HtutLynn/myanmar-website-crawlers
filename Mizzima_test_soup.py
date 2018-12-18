@@ -73,8 +73,7 @@ extracted_content.append(str(headtext))
 
 # Extract the main article from the tag
 # And dump the information into the bodytext_container
-bodytext_container = page_soup.find(
-    "div", {"class": "field-item even"}, {"property": "content:encoded"})
+bodytext_container = page_soup.find("div", {"class": "field-item even"}, {"property": "content:encoded"})
 
 # In case there's  no matched item, then exit!
 if bodytext_container == []:

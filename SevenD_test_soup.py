@@ -2,11 +2,11 @@ import bs4
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup as soup
 import csv
+# from fake_useragent import UserAgent
 import sys
 
 # Put the desired url or website into the variable
-#my_url = "http://www.president-office.gov.mm/?q=briefing-room/news/2018/12/15/id-14831"
-my_url = "http://www.president-office.gov.mm/?q=briefing-room/news/2018/12/15/id-14831"
+my_url = "http://7daydaily.com/story/145068"
 
 # pre-build a free list for final extracted content
 extracted_content = []
@@ -39,8 +39,8 @@ page_soup = soup(page_html, "html.parser")
 # For that, we need to use findAll function fory all desired html tag : <div> for example
 # using just page_soup.div will only give the first one div tag
 
-# The headtext of the article in president website is in <h1> so extract that
-headtext_container = page_soup.findAll("h1", {"class": "page-title"})
+# The headtext of the article in 7days website is in <h1> so extract that
+headtext_container = page_soup.findAll("h1", {"id": "page-title"})
 
 # In case there's no matched item, then exit!
 if headtext_container == []:
@@ -51,16 +51,20 @@ if headtext_container == []:
 for headtext in headtext_container:
     extracted_content.append(str(headtext.text))
 
-# President office website has all main contents including date under a div
+# The Voice website has all main contents including date under a div
 # Extract the all contents from the tag
 # And dump the information into content_container
-# There are many tag with "class" : "field-item even" so just use preoperty tag to filter
-content_container = page_soup.find("div", {"property": "content:encoded"})
+# There are many tag with "class" : "field-item even" so just use property tag to filter
+content_container = page_soup.find("div", {"class": "field-item even"} ,{"property": "content:encoded"})
 
 # In case there's no matched item, then exit!
 if content_container == []:
     print("There's no item in the content_container")
     sys.exit()  # Alternative : if not date_container: works too
+
+
+[s.extract() for s in content_container('script')]
+[s.extract() for s in content_container('div')]
 
 # all tag within the filtered tags are all <p> so select them all to scrape
 # all <p> don't have class so assign it None
@@ -70,11 +74,8 @@ content_container = content_container.find_all("p", {"class": None})
 for content in content_container:
     extracted_content.append(str(content.text))
 
-# The first <p> in body content is always empty so delete it
-del extracted_content[1]
-
 # Write the extracted content into csv file
-with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/President_office_data.csv", "w", encoding='utf-8') as WR:
+with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/SevenD_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
     for item in extracted_content:
         writer.writerow([item])  # Need to add [] for item because without it,
