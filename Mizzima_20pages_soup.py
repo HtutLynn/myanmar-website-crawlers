@@ -4,10 +4,10 @@ from bs4 import BeautifulSoup as soup
 from fake_useragent import UserAgent
 import csv
 import sys
+import time
 
 ua = UserAgent()
 headers = {'User-Agent': str(ua.random)}
-print(headers)
 
 urls = [
     "http://www.mizzimaburmese.com/article/53173",
@@ -38,7 +38,7 @@ for url in urls:
     print("Processing {}".format(url))
     extracted_content = []
 
-    req = Request(url, headers)
+    req = Request(url, headers=headers)
     page_html = urlopen(req).read()
     page_soup = soup(page_html, "html.parser")
     date_container = page_soup.findAll(
@@ -77,3 +77,7 @@ for url in urls:
         writer = csv.writer(WR)
         for item in extracted_content:
             writer.writerow([item])
+
+    # delay about 10 seconds for crawl-delay
+    # respect the robots policy of the website        
+    time.sleep(10)

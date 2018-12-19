@@ -1,9 +1,12 @@
 import bs4
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup as soup
-# from fake_useragent import UserAgent
+from fake_useragent import UserAgent
 import csv
 import sys
+
+ua = UserAgent()
+headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
 my_url = "https://myanmar.mmtimes.com/news/118691.html"
@@ -18,7 +21,7 @@ extracted_content = []
 # with known browser agent in this case Mozilla
 # If you send numerous request to server using just crawler and this ip-address
 # It can get you banned so take care!
-req = Request(my_url, headers={'User-Agent': 'Mozilla/5.0'})
+req = Request(my_url, headers=headers)
 
 # save the html file into a container : page_html
 page_html = urlopen(req).read()
@@ -50,10 +53,9 @@ if headtext_container == []:
 for headtext in headtext_container:
     extracted_content.append(str(headtext.text))
 
-print(headtext_container)
 # mmtimes has a special content called summary and
 # It's seperated from the rest of the rest of the body content
-summary_container = page_soup.findAll("div", {"class" : "summary"})
+summary_container = page_soup.findAll("div", {"class": "summary"})
 
 if summary_container == []:
     print("There's no item in summary_container")
@@ -62,13 +64,13 @@ if summary_container == []:
 for summary in summary_container:
     extracted_content.append(str(summary.text))
 
-content_container = page_soup.find("div", {"class" : "field-item even"})
+content_container = page_soup.find("div", {"class": "field-item even"})
 
 if content_container == []:
     print("There's no item in the content_container")
     sys.exit()  # Alternative : if not date_container: works too
 
-#print(content_container)
+# print(content_container)
 
 #[s.extract() for s in content_container('br')]
 
@@ -77,13 +79,13 @@ content_container = content_container.find("p", {"class": None})
 # All of main body content of the articles in mmtimes are witin a single <p> tag
 # Seperated by two <br /> tags between sentences so we can use find_all function for selecting text data
 # Instead we use childGenerator which generates characters on by one if they are different data structures
-# In this case, text are bs4.navigableStrings and <br /> are bs4.tag so 
+# In this case, text are bs4.navigableStrings and <br /> are bs4.tag so
 # I use childGenerator to be able to get seperate texts as a single data and delete the tags
 
 # for temp list
 test = []
 
-#print(content_container)
+# print(content_container)
 for temp in content_container.childGenerator():
     test.append(temp)
 

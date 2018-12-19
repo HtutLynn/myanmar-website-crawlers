@@ -1,9 +1,13 @@
 import bs4
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup as soup
-# from fake_useragent import UserAgent
+from fake_useragent import UserAgent
 import csv
 import sys
+
+
+ua = UserAgent()
+headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
 #my_url = "http://www.president-office.gov.mm/?q=briefing-room/news/2018/12/15/id-14831"
@@ -20,7 +24,7 @@ extracted_content = []
 # If you send numerous request to server using just crawler and this ip-address
 # It can get you banned so take care!
 
-req = Request(my_url, headers={'User-Agent': 'Mozilla/5.0'})
+req = Request(my_url, headers=headers)
 
 # save the html file into a container : page_html
 page_html = urlopen(req).read()
