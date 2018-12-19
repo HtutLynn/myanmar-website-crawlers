@@ -9,10 +9,13 @@ ua = UserAgent()
 headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
-my_url = "https://myanmar.mmtimes.com/news/118691.html"
+my_url = "https://myanmar.mmtimes.com/news/118553.html"
 
 # pre-build a free list for final extracted content
 extracted_content = []
+
+# This requires a free list since mmtimes website is inconsistent
+final_content = []
 
 # because of mod_security or some similar server security feature
 # which blocks known spider/bot user agents (urllib uses something like python urllib/3.3.0,
@@ -61,10 +64,15 @@ if summary_container == []:
     print("There's no item in summary_container")
     sys.exit()
 
+
 for summary in summary_container:
     extracted_content.append(str(summary.text))
 
-content_container = page_soup.find("div", {"class": "field-item even"})
+content_container = page_soup.find("div", {"class": "field-item even"}) 
+
+[s.extract() for s in content_container('div')]
+[s.extract() for s in content_container('blockquote')]
+[s.extract() for s in content_container('script')]
 
 if content_container == []:
     print("There's no item in the content_container")
@@ -74,29 +82,44 @@ if content_container == []:
 
 #[s.extract() for s in content_container('br')]
 
-content_container = content_container.find("p", {"class": None})
+content_container = content_container.find_all("p", {"class": None})
 
+# Scenario One
 # All of main body content of the articles in mmtimes are witin a single <p> tag
 # Seperated by two <br /> tags between sentences so we can use find_all function for selecting text data
 # Instead we use childGenerator which generates characters on by one if they are different data structures
 # In this case, text are bs4.navigableStrings and <br /> are bs4.tag so
 # I use childGenerator to be able to get seperate texts as a single data and delete the tags
 
-# for temp list
-test = []
+# Scenario Two
+# Sometimes mmtimes write codes in the opposite way if scenario one
+# other sites are consistant with one sentence under one tag
+# mmtimes sometimes uses one sentence per one tag 
+# or sometimes 3 sentences per tag or 2 per tag
+# That's why we needs to check if there are other children under each tag resulted from find_all
+# The method is combination of other websites + scenario one
 
-# print(content_container)
-for temp in content_container.childGenerator():
-    test.append(temp)
+for content in content_container:
+    test = []
 
-for entry in test:
-    if isinstance(entry, bs4.NavigableString):
-        extracted_content.append(str(entry).strip())
-    elif isinstance(entry, bs4.Tag):
+    # print(content_container)
+    for temp in content.childGenerator():
+        test.append(temp)
+
+    for entry in test:
+        if isinstance(entry, bs4.NavigableString):
+            extracted_content.append(str(entry).strip())
+        elif isinstance(entry, bs4.Tag):
+            pass
+
+for text in extracted_content:
+    if not text:
         pass
+    else:
+        final_content.append(text)
 
 with open("C:\myanmar-website-crawlers\mmtimes_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
-    for item in extracted_content:
+    for item in final_content:
         writer.writerow([item])  # Need to add [] for item because without it,
         # the writer function will store each charaters and syllables as a column
