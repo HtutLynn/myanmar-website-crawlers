@@ -9,7 +9,7 @@ ua = UserAgent()
 headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
-my_url = "https://myanmar.mmtimes.com/news/118720.html"
+my_url = "http://www.shwemom.com/robots-could-evolve-faster-than-people-and-kill-us-all-stephen-hawking-warns/"
 
 # pre-build a free list for final extracted content
 extracted_content = []
@@ -35,6 +35,8 @@ page_html = urlopen(req).read()
 # beautifulSoup data structure can let us access the html file effortlessly
 page_soup = soup(page_html, "html.parser")
 
+print()
+
 # In order to work this type of script
 # This website must use standardized HTML format
 # From now, we will extract four things
@@ -44,8 +46,8 @@ page_soup = soup(page_html, "html.parser")
 # For that, we need to use findAll function fory all desired html tag : <div> for example
 # using just page_soup.div will only give the first one div tag
 
-# The headtext of the article in mmtimes website is in <div> so extract that
-headtext_container = page_soup.findAll("div", {"class": "news-detail-title"})
+# The headtext of the article in shwemom website is in <div> so extract that
+headtext_container = page_soup.findAll("h1", {"class": "entry-title"})
 
 # In case there's no matched item, then exit!
 if headtext_container == []:
@@ -56,19 +58,7 @@ if headtext_container == []:
 for headtext in headtext_container:
     extracted_content.append(str(headtext.text))
 
-# mmtimes has a special content called summary and
-# It's seperated from the rest of the rest of the body content
-summary_container = page_soup.findAll("div", {"class": "summary"})
-
-if summary_container == []:
-    print("There's no item in summary_container")
-    sys.exit()
-
-
-for summary in summary_container:
-    extracted_content.append(str(summary.text))
-
-content_container = page_soup.find("div", {"class": "field-item even"}) 
+content_container = page_soup.find("div", {"class": "td-post-content"}) 
 
 [s.extract() for s in content_container('div')]
 [s.extract() for s in content_container('blockquote')]
@@ -83,21 +73,6 @@ if content_container == []:
 #[s.extract() for s in content_container('br')]
 
 content_container = content_container.find_all("p", {"class": None})
-
-# Scenario One
-# All of main body content of the articles in mmtimes are witin a single <p> tag
-# Seperated by two <br /> tags between sentences so we can use find_all function for selecting text data
-# Instead we use childGenerator which generates characters on by one if they are different data structures
-# In this case, text are bs4.navigableStrings and <br /> are bs4.tag so
-# I use childGenerator to be able to get seperate texts as a single data and delete the tags
-
-# Scenario Two
-# Sometimes mmtimes write codes in the opposite way if scenario one
-# other sites are consistant with one sentence under one tag
-# mmtimes sometimes uses one sentence per one tag 
-# or sometimes 3 sentences per tag or 2 per tag
-# That's why we needs to check if there are other children under each tag resulted from find_all
-# The method is combination of other websites + scenario one
 
 for content in content_container:
     test = []
@@ -118,7 +93,10 @@ for text in extracted_content:
     else:
         final_content.append(text)
 
-with open("C:\myanmar-website-crawlers\mmtimes_data.csv", "w", encoding='utf-8') as WR:
+# Delete last entry beacuse it's in english and about source news
+del final_content[-1]
+
+with open("C:\myanmar-website-crawlers\shwemom_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
     for item in final_content:
         writer.writerow([item])  # Need to add [] for item because without it,
