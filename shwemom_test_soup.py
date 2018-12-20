@@ -9,8 +9,7 @@ ua = UserAgent()
 headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
-my_url = "http://www.shwemom.com/robots-could-evolve-faster-than-people-and-kill-us-all-stephen-hawking-warns/"
-
+my_url = "http://www.shwemom.com/celebrities-and-their-phobias-v2/"
 # pre-build a free list for final extracted content
 extracted_content = []
 
@@ -58,11 +57,12 @@ if headtext_container == []:
 for headtext in headtext_container:
     extracted_content.append(str(headtext.text))
 
-content_container = page_soup.find("div", {"class": "td-post-content"}) 
+content_container = page_soup.find("div", {"class": "td-post-content"})
 
 [s.extract() for s in content_container('div')]
 [s.extract() for s in content_container('blockquote')]
 [s.extract() for s in content_container('script')]
+[s.extract() for s in content_container('img')]
 
 if content_container == []:
     print("There's no item in the content_container")
