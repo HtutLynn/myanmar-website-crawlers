@@ -9,7 +9,7 @@ ua = UserAgent()
 headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
-my_url = "https://myanmar.mmtimes.com/news/118720.html"
+my_url = "https://myanmar.mmtimes.com/news/111190.html"
 
 # pre-build a free list for final extracted content
 extracted_content = []
