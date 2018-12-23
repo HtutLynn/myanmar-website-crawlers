@@ -15,14 +15,14 @@ invalid_counter = 0
 NoneType = type(None) # for 'NoneTpye' specific error avoidance
 
 wlist = []
-for j in range (4,8):
+for j in range (8,9):
     for i in range(1000):
         # can be change randint range between 1000 to 8000
         # 9000 is not stable
         start = int(str(j) + "000")
         end   = int(str(j) + "999")
         if j == 8:
-            end = int(int(j)+ "795")
+            end = int(str(j)+ "805")
         try:
         
             r = random.randint(start, end)
