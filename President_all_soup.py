@@ -96,43 +96,23 @@ for url in urls:
             [s.extract() for s in content_container('script')]
 
             #[s.extract() for s in content_container('br')]
+            # all tag within the filtered tags are all <p> so select them all to scrape
+            # all <p> don't have class so assign it None
+            content_container = content_container.find_all("p", {"class": None})
 
-            content_container = content_container.find_all(
-                "p", {"class": None})
-
-            # Scenario One
-            # All of main body content of the articles in mmtimes are witin a single <p> tag
-            # Seperated by two <br /> tags between sentences so we can use find_all function for selecting text data
-            # Instead we use childGenerator which generates characters on by one if they are different data structures
-            # In this case, text are bs4.navigableStrings and <br /> are bs4.tag so
-            # I use childGenerator to be able to get seperate texts as a single data and delete the tags
-
-            # Scenario Two
-            # Sometimes mmtimes write codes in the opposite way if scenario one
-            # other sites are consistant with one sentence under one tag
-            # mmtimes sometimes uses one sentence per one tag
-            # or sometimes 3 sentences per tag or 2 per tag
-            # That's why we needs to check if there are other children under each tag resulted from find_all
-            # The method is combination of other websites + scenario one
-
+            # And save the information into extracted_content by loop
             for content in content_container:
-                test = []
+                extracted_content.append(str(content.text))
 
-                # print(content_container)
-                for temp in content.childGenerator():
-                    test.append(temp)
-
-                for entry in test:
-                    if isinstance(entry, bs4.NavigableString):
-                        extracted_content.append(str(entry).strip())
-                    elif isinstance(entry, bs4.Tag):
-                        pass
-
-            for text in extracted_content:
-                if not text:
+            # The first <p> in body content is always empty so delete it
+            for entry in extracted_content:
+                if not entry:
                     pass
-                else:
-                    final_content.append(text)
+            else:
+                final_content.append(entry)
+
+            # deleting the None type empty content in finalized list which is about to write
+            final_content = list(filter(None,final_content))
 
             with open("C:\myanmar-website-crawlers\President_all_data.csv", "a", encoding='utf-8') as WR:
                 writer = csv.writer(WR)

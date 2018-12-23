@@ -130,6 +130,9 @@ for i in range(1000):
                     else:
                         final_content.append(text)
 
+                # deleting the None type empty content in finalized list which is about to write
+                final_content = list(filter(None,final_content))
+
                 with open("C:\myanmar-website-crawlers\mmtimes_all_data.csv", "a", encoding='utf-8') as WR:
                     writer = csv.writer(WR)
                     for item in final_content:

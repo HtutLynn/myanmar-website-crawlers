@@ -52,10 +52,10 @@ headtext_container = page_soup.findAll("h1", {"class": "entry-title"})
 if headtext_container == []:
     print("There's no item in headtext_container")
     sys.exit()
-
-# add the scraped text into final extracted content
-for headtext in headtext_container:
-    extracted_content.append(str(headtext.text))
+else:
+    # add the scraped text into final extracted content
+    for headtext in headtext_container:
+        extracted_content.append(str(headtext.text))
 
 content_container = page_soup.find("div", {"class": "td-post-content"})
 
@@ -67,37 +67,40 @@ content_container = page_soup.find("div", {"class": "td-post-content"})
 if content_container == []:
     print("There's no item in the content_container")
     sys.exit()  # Alternative : if not date_container: works too
-
-# print(content_container)
-
-#[s.extract() for s in content_container('br')]
-
-content_container = content_container.find_all("p", {"class": None})
-
-for content in content_container:
-    test = []
-
+else:
     # print(content_container)
-    for temp in content.childGenerator():
-        test.append(temp)
 
-    for entry in test:
-        if isinstance(entry, bs4.NavigableString):
-            extracted_content.append(str(entry).strip())
-        elif isinstance(entry, bs4.Tag):
+    #[s.extract() for s in content_container('br')]
+
+    content_container = content_container.find_all("p", {"class": None})
+
+    for content in content_container:
+        test = []
+
+        # print(content_container)
+        for temp in content.childGenerator():
+            test.append(temp)
+
+        for entry in test:
+            if isinstance(entry, bs4.NavigableString):
+                extracted_content.append(str(entry).strip())
+            elif isinstance(entry, bs4.Tag):
+                pass
+
+    for text in extracted_content:
+        if not text:
             pass
+        else:
+            final_content.append(text)
 
-for text in extracted_content:
-    if not text:
-        pass
-    else:
-        final_content.append(text)
+    # Delete last entry beacuse it's in english and about source news
+    del final_content[-1]
 
-# Delete last entry beacuse it's in english and about source news
-del final_content[-1]
+    # deleting the None type empty content in finalized list which is about to write
+    final_content = list(filter(None,final_content))
 
-with open("C:\myanmar-website-crawlers\shwemom_data.csv", "w", encoding='utf-8') as WR:
-    writer = csv.writer(WR)
-    for item in final_content:
-        writer.writerow([item])  # Need to add [] for item because without it,
-        # the writer function will store each charaters and syllables as a column
+    with open("C:\myanmar-website-crawlers\shwemom_data.csv", "w", encoding='utf-8') as WR:
+        writer = csv.writer(WR)
+        for item in final_content:
+            writer.writerow([item])  # Need to add [] for item because without it,
+            # the writer function will store each charaters and syllables as a column

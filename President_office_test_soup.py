@@ -13,8 +13,11 @@ headers = {'User-Agent': str(ua.random)}
 #my_url = "http://www.president-office.gov.mm/?q=briefing-room/news/2018/12/15/id-14831"
 my_url = "http://www.president-office.gov.mm/?q=briefing-room/news/2018/12/15/id-14831"
 
-# pre-build a free list for final extracted content
+# pre-build a free list for extracted content
 extracted_content = []
+
+# pre-build a free list for final content
+final_content = []
 
 # because of mod_security or some similar server security feature
 # which blocks known spider/bot user agents (urllib uses something like python urllib/3.3.0,
@@ -51,10 +54,10 @@ headtext_container = page_soup.findAll("h1", {"class": "page-title"})
 if headtext_container == []:
     print("There's no item in headtext_container")
     sys.exit()
-
-# add the scraped text into final extracted content
-for headtext in headtext_container:
-    extracted_content.append(str(headtext.text))
+else:
+    # add the scraped text into final extracted content
+    for headtext in headtext_container:
+        extracted_content.append(str(headtext.text))
 
 # President office website has all main contents including date under a div
 # Extract the all contents from the tag
@@ -66,21 +69,28 @@ content_container = page_soup.find("div", {"property": "content:encoded"})
 if content_container == []:
     print("There's no item in the content_container")
     sys.exit()  # Alternative : if not date_container: works too
+else:
+    # all tag within the filtered tags are all <p> so select them all to scrape
+    # all <p> don't have class so assign it None
+    content_container = content_container.find_all("p", {"class": None})
 
-# all tag within the filtered tags are all <p> so select them all to scrape
-# all <p> don't have class so assign it None
-content_container = content_container.find_all("p", {"class": None})
+    # And save the information into extracted_content by loop
+    for content in content_container:
+        extracted_content.append(str(content.text))
 
-# And save the information into extracted_content by loop
-for content in content_container:
-    extracted_content.append(str(content.text))
+    # The first <p> in body content is always empty so delete it
+    for entry in extracted_content:
+        if not entry:
+            pass
+        else:
+            final_content.append(entry)
 
-# The first <p> in body content is always empty so delete it
-del extracted_content[1]
+    # deleting the None type empty content in finalized list which is about to write
+    final_content = list(filter(None,final_content))
 
-# Write the extracted content into csv file
-with open("/Users/htutlinaung/Desktop/myanmar-website-crawlers/President_office_data.csv", "w", encoding='utf-8') as WR:
-    writer = csv.writer(WR)
-    for item in extracted_content:
-        writer.writerow([item])  # Need to add [] for item because without it,
-        # the writer function will store each charaters and syllables as a column
+    # Write the extracted content into csv file
+    with open("C:\myanmar-website-crawlers\President_office_data.csv", "w", encoding='utf-8') as WR:
+        writer = csv.writer(WR)
+        for item in final_content:
+            writer.writerow([item])  # Need to add [] for item because without it,
+            # the writer function will store each charaters and syllables as a column

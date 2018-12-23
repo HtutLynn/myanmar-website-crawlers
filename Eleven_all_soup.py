@@ -14,8 +14,7 @@ headers = {'User-Agent': str(ua.random)}
 
 NoneType = type(None)  # for 'NoneTpye' specific error avoidance
 
-# import the csv file
-urls = pd.read_csv("C:\myanmar-website-crawlers\shwemom.csv", header=None)
+urls = pd.read_csv("C:\myanmar-website-crawlers\Eleven.csv", header=None)
 urls = np.array(urls)
 urls = urls.tolist()
 
@@ -32,7 +31,7 @@ for i in range(1000):
                 "[", "").replace("'", "").replace("]", "")
 
             wlist.append(r)
-            # Put the desired url or website into the variable
+
             print(my_url)
             # pre-build a free list for final extracted content
             extracted_content = []
@@ -67,9 +66,9 @@ for i in range(1000):
             # For that, we need to use findAll function fory all desired html tag : <div> for example
             # using just page_soup.div will only give the first one div tag
 
-            # The headtext of the article in shwemom website is in <div> so extract that
+            # The headtext of the article in Eleven website is in <div> so extract that
             headtext_container = page_soup.findAll(
-                "h1", {"class": "entry-title"})
+                "div", {"class": "news-detail-title"})
 
             # In case there's no matched item, then exit!
             if headtext_container == [] or isinstance(headtext_container, NoneType):
@@ -80,8 +79,20 @@ for i in range(1000):
                 for headtext in headtext_container:
                     extracted_content.append(str(headtext.text))
 
+            # Eleven has a special content called author and
+            # It's seperated from the rest of the rest of the body content
+            author_container = page_soup.findAll(
+                "div", {"class": "news-detail-date-author-info-author"})
+
+            if author_container == [] or isinstance(author_container, NoneType):
+                print("There's no item in summary_container")
+                # sys.exit()
+            else:
+                for author in author_container:
+                    extracted_content.append(str(author.text))
+
             content_container = page_soup.find(
-                "div", {"class": "td-post-content"})
+                "div", {"property": "content:encoded"})
 
             if content_container == [] or isinstance(content_container, NoneType):
                 print("There's no item in the content_container")
@@ -90,14 +101,13 @@ for i in range(1000):
                 [s.extract() for s in content_container('div')]
                 [s.extract() for s in content_container('blockquote')]
                 [s.extract() for s in content_container('script')]
-                [s.extract() for s in content_container('img')]
 
                 #[s.extract() for s in content_container('br')]
 
                 content_container = content_container.find_all(
                     "p", {"class": None})
 
-                # Reuse code from mmtimes for shwemom
+                #Reusing code from mmtimes for Eleven
 
                 # Scenario One
                 # All of main body content of the articles in mmtimes are witin a single <p> tag
@@ -136,7 +146,7 @@ for i in range(1000):
                 # deleting the None type empty content in finalized list which is about to write
                 final_content = list(filter(None,final_content))
 
-                with open("C:\myanmar-website-crawlers\shwemom_all_data.csv", "a", encoding='utf-8') as WR:
+                with open("C:\myanmar-website-crawlers\Eleven_all_data.csv", "a", encoding='utf-8') as WR:
                     writer = csv.writer(WR)
                     for item in final_content:
                         # Need to add [] for item because without it,

@@ -32,3 +32,5 @@ for i in range(1,11):
         #Most free proxies will often get connection errors. You will have retry the entire request using another proxy to work. 
         #We will just skip retries as its beyond the scope of this tutorial and we are only downloading a single url 
         print("Skipping. Connnection error")
+
+extracted_content = list(filter(None,extracted_content))
