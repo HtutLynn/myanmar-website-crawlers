@@ -133,6 +133,8 @@ for i in range(1000):
                     else:
                         final_content.append(text)
 
+                del final_content[-1]
+
                 # deleting the None type empty content in finalized list which is about to write
                 final_content = list(filter(None,final_content))
 
