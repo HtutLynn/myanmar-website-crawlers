@@ -12,7 +12,7 @@ headers = {'User-Agent': str(ua.random)}
 
 NoneType = type(None) # for 'NoneTpye' specific error avoidance
 
-url_format = "http://mizzimaburmese.com" # for concatenation
+url_format = "https://burmese.voanews.com" # for concatenation
 
 # pre-build a free container for extracted urls
 urls = []
@@ -20,18 +20,14 @@ urls = []
 titles = []
 # pre-build a free container for date
 
-for i in range(0,1216):
+for i in range(0,101):
 
     try:
         
          # Put the desired url or website into the variable
-        my_url = "http://mizzimaburmese.com/news/local?page="+str(i)
+        my_url = "https://burmese.voanews.com/z/2517?p="+str(i)
         print(my_url)
         # pre-build a free list for final extracted content
-        extracted_content = []
-
-        # This requires a free list since mmtimes website is inconsistent
-        final_content = []
 
         # because of mod_security or some similar server security feature
         # which blocks known spider/bot user agents (urllib uses something like python urllib/3.3.0,
@@ -45,26 +41,29 @@ for i in range(0,1216):
         # save the html file into a container : page_html
         page_html = urlopen(req).read()
 
+
+
         # Then parse html using soup function of the bautifulSoup library
         # we can parse in many different ways : XML for example
         # The data structure type of resulted output is beautifulSoup
         # beautifulSoup data structure can let us access the html file effortlessly
         page_soup = soup(page_html, "html.parser")
 
+        #print(page_soup)
+
         # This time, the main target for scraping is href urls
         # urls are to be extracted from mizzima indexing page for each category
         # Main featured article is in the seperate div from other articles
         # Extract title and url from featured article div tag
 
-        featured_article = page_soup.find("div", {"class": "news-category-large-image-title"})
+        featured_article = page_soup.find("div", {"class": "media-block horizontal with-date has-img size-2"})
 
         if featured_article == [] or isinstance(featured_article,NoneType):
             print("There's no url or item in the container")
             sys.exit()
         else:
-            f_article_url = url_format + str(featured_article.a['href'])
-            print(f_article_url)
-            f_article_title   = featured_article.a.text
+            f_article_url = url_format + str(featured_article.find("a")['href'])
+            f_article_title   = str(featured_article.find("a")["title"])
             urls.append(f_article_url)
             titles.append(f_article_title)
 
@@ -72,15 +71,15 @@ for i in range(0,1216):
         # All articles are inside a similar named div tag
         # Extract all articles urls and their titles
 
-        articles_container = page_soup.findAll("div", {"class" : "news-category-small-image-title"})
+        articles_container = page_soup.findAll("div", {"class" : "media-block horizontal with-date has-img size-3"})
 
         if articles_container == [] or isinstance(articles_container,NoneType):
             print("There's no urls or item in the container")
         else:
 
             for article in articles_container:
-                article_url = url_format + str(article.a['href'])
-                article_title = article.a.text
+                article_url = url_format + str(article.find("a")['href'])
+                article_title = str(article.find("a")["title"])
 
                 # append to respective lists after getting urls and titles
                 if not article_url:
@@ -91,7 +90,7 @@ for i in range(0,1216):
 
         rows = zip(urls,titles)
 
-        with open("C:\myanmar-website-crawlers\mizzima_urls.csv", "a", encoding='utf-8') as WR:
+        with open("C:\myanmar-website-crawlers\\voa_urls.csv", "a", encoding='utf-8') as WR:
             writer = csv.writer(WR)
             for row in rows:
                 # Need to add [] for item because without it,
