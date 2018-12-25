@@ -60,7 +60,7 @@ for i in range(0,1216):
 
         if featured_article == [] or isinstance(featured_article,NoneType):
             print("There's no url or item in the container")
-            sys.exit()
+            continue
         else:
             f_article_url = url_format + str(featured_article.a['href'])
             print(f_article_url)
@@ -76,6 +76,7 @@ for i in range(0,1216):
 
         if articles_container == [] or isinstance(articles_container,NoneType):
             print("There's no urls or item in the container")
+            continue
         else:
 
             for article in articles_container:

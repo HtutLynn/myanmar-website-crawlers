@@ -10,7 +10,7 @@ headers = {'User-Agent': str(ua.random)}
 
 # Put the desired url or website into the variable
 # my_url = "http://www.mizzimaburmese.com/article/52168"
-my_url = "http://www.mizzimaburmese.com/article/53173"
+my_url = "http://mizzimaburmese.com/article/53390"
 
 # pre-build a free list for extracted content
 extracted_content = []
@@ -116,6 +116,8 @@ else:
                 
     # deleting the None type empty content in finalized list which is about to write
     final_content = list(filter(None,final_content))
+
+    del final_content[-1]
 
     with open("C:\myanmar-website-crawlers\Mizzima_data.csv", "w", encoding='utf-8') as WR:
         writer = csv.writer(WR)

@@ -24,8 +24,10 @@ for i in range(0,101):
 
     try:
         
-         # Put the desired url or website into the variable
-        my_url = "https://burmese.voanews.com/z/2517?p="+str(i)
+        # Put the desired url or website into the variable
+        # my_url = "https://burmese.voanews.com/z/2517?p="+str(i)
+        my_url = "https://burmese.voanews.com/z/2516"+str(i)
+        
         print(my_url)
         # pre-build a free list for final extracted content
 
@@ -60,7 +62,7 @@ for i in range(0,101):
 
         if featured_article == [] or isinstance(featured_article,NoneType):
             print("There's no url or item in the container")
-            sys.exit()
+            continue
         else:
             f_article_url = url_format + str(featured_article.find("a")['href'])
             f_article_title   = str(featured_article.find("a")["title"])
@@ -75,6 +77,7 @@ for i in range(0,101):
 
         if articles_container == [] or isinstance(articles_container,NoneType):
             print("There's no urls or item in the container")
+            continue
         else:
 
             for article in articles_container:
