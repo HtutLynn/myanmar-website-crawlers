@@ -14,18 +14,28 @@ NoneType = type(None) # for 'NoneTpye' specific error avoidance
 
 url_format = "http://mizzimaburmese.com" # for concatenation
 
-# pre-build a free container for extracted urls
-urls = []
-# pre-build a free container for titles
-titles = []
-# pre-build a free container for date
 
-for i in range(0,1216):
+page_counter = 0
+
+for i in range(0,837):
 
     try:
         
+        # pre-build a free container for extracted urls
+        urls = []
+        # pre-build a free container for titles
+        titles = []
+        # pre-build a free container for date
+
+
          # Put the desired url or website into the variable
-        my_url = "http://mizzimaburmese.com/news/local?page="+str(i)
+        # my_url = "http://mizzimaburmese.com/news/local?page="+str(i)
+        my_url = "http://mizzimaburmese.com/world-news?page="+str(i)
+
+        page_counter += 1
+
+        print("Current page count %r " %(page_counter))
+
         print(my_url)
         # pre-build a free list for final extracted content
         extracted_content = []
@@ -44,6 +54,7 @@ for i in range(0,1216):
 
         # save the html file into a container : page_html
         page_html = urlopen(req).read()
+
 
         # Then parse html using soup function of the bautifulSoup library
         # we can parse in many different ways : XML for example
@@ -89,10 +100,11 @@ for i in range(0,1216):
                 else:
                     urls.append(article_url)
                     titles.append(article_title)
-
+        
+        # print(urls)
         rows = zip(urls,titles)
 
-        with open("C:\myanmar-website-crawlers\mizzima_urls.csv", "a", encoding='utf-8') as WR:
+        with open("C:\myanmar-website-crawlers\mizzima_urls_world.csv", "a", encoding='utf-8') as WR:
             writer = csv.writer(WR)
             for row in rows:
                 # Need to add [] for item because without it,

@@ -14,9 +14,11 @@ headers = {'User-Agent': str(ua.random)}
 
 NoneType = type(None)  # for 'NoneTpye' specific error avoidance
 
-urls = pd.read_csv("C:\myanmar-website-crawlers\Eleven.csv", header=None)
+urls = pd.read_csv("C:\myanmar-website-crawlers\Eleven_urls_news.csv", header=None)
 urls = np.array(urls)
 urls = urls.tolist()
+
+page_counter = 0
 
 wlist = []
 for i in range(1000):
@@ -25,12 +27,15 @@ for i in range(1000):
     try:
         r = random.randint(0, 999)
         if r not in wlist:
-            my_url = urls[r]
+            my_url = str(urls[r])
 
-            my_url = str(my_url).replace(
-                "[", "").replace("'", "").replace("]", "")
+            my_url = my_url.replace("'", "").replace("[", "").replace("]", "")
+
+            page_counter += 1
 
             wlist.append(r)
+
+            print("current page count %r" %(page_counter))
 
             print(my_url)
             # pre-build a free list for final extracted content
@@ -146,7 +151,7 @@ for i in range(1000):
                 # deleting the None type empty content in finalized list which is about to write
                 final_content = list(filter(None,final_content))
 
-                with open("C:\myanmar-website-crawlers\Eleven_all_data.csv", "a", encoding='utf-8') as WR:
+                with open("C:\myanmar-website-crawlers\Eleven_data_news.csv", "a", encoding='utf-8') as WR:
                     writer = csv.writer(WR)
                     for item in final_content:
                         # Need to add [] for item because without it,

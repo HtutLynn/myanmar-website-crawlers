@@ -14,16 +14,17 @@ NoneType = type(None) # for 'NoneTpye' specific error avoidance
 
 url_format = "https://burmese.voanews.com" # for concatenation
 
-# pre-build a free container for extracted urls
-urls = []
-# pre-build a free container for titles
-titles = []
-# pre-build a free container for date
 
 for i in range(0,101):
 
     try:
         
+        # pre-build a free container for extracted urls
+        urls = []
+        # pre-build a free container for titles
+        titles = []
+        # pre-build a free container for date
+
         # Put the desired url or website into the variable
         # my_url = "https://burmese.voanews.com/z/2517?p="+str(i)
         my_url = "https://burmese.voanews.com/z/2516"+str(i)

@@ -1,38 +1,46 @@
-import bs4
-import time
+import csv
 import random
+import sys
+import time
 from urllib.request import Request, urlopen
+
+import bs4
+import numpy as np
+import pandas as pd
 from bs4 import BeautifulSoup as soup
 from fake_useragent import UserAgent
-import csv
-import sys
-import pandas as pd
-import numpy as np
 
 ua = UserAgent()
 headers = {'User-Agent': str(ua.random)}
 
 NoneType = type(None)  # for 'NoneTpye' specific error avoidance
 
-urls = pd.read_csv("C:\myanmar-website-crawlers\Mizzima.csv", header=None)
+urls = pd.read_csv(
+    "C:\myanmar-website-crawlers\mizzima_urls_new.csv", header=None)
 urls = np.array(urls)
 urls = urls.tolist()
 
+page_counter = 0
+
 wlist = []
-for i in range(1000):
+for i in range(0, 10001):
     # can be change randint range between 1000 to 8000
     # 9000 is not stable
     try:
-        r = random.randint(0, 999)
+        r = random.randint(0, 10000)
         if r not in wlist:
-            my_url = urls[r]
+            my_url = str(urls[r])
 
-            my_url = str(my_url).replace(
-                "[", "").replace("'", "").replace("]", "")
+            my_url = my_url.replace("'", "").replace("[", "").replace("]", "")
+
+            page_counter += 1
 
             wlist.append(r)
 
             print(my_url)
+
+            print("current page count %r" % (page_counter))
+
             # pre-build a free list for final extracted content
             extracted_content = []
 
@@ -67,7 +75,8 @@ for i in range(1000):
             # using just page_soup.div will only give the first one div tag
 
             # The headtext of the article in Mizzima website is in <div> so extract that
-            headtext_container = page_soup.findAll("div", {"class": "news-details-title"})
+            headtext_container = page_soup.findAll(
+                "div", {"class": "news-details-title"})
 
             # In case there's no matched item, then exit!
             if headtext_container == [] or isinstance(headtext_container, NoneType):
@@ -90,7 +99,8 @@ for i in range(1000):
                 for author in author_container:
                     extracted_content.append(str(author.text))
 
-            content_container = page_soup.find("div", {"class": "field-item even"}, {"property": "content:encoded"})
+            content_container = page_soup.find(
+                "div", {"class": "field-item even"}, {"property": "content:encoded"})
 
             if content_container == [] or isinstance(content_container, NoneType):
                 print("There's no item in the content_container")
@@ -139,17 +149,19 @@ for i in range(1000):
                         pass
                     else:
                         final_content.append(text)
-                
-                # deleting the None type empty content in finalized list which is about to write
-                final_content = list(filter(None,final_content))
 
-                with open("C:\myanmar-website-crawlers\Mizzima_all_data.csv", "a", encoding='utf-8') as WR:
+                # deleting the None type empty content in finalized list which is about to write
+                final_content = list(filter(None, final_content))
+
+                del final_content[-1]
+
+                with open("C:\myanmar-website-crawlers\Mizzima_data_1.csv", "a", encoding='utf-8') as WR:
                     writer = csv.writer(WR)
                     for item in final_content:
                         # Need to add [] for item because without it,
                         writer.writerow([item])
                         # the writer function will store each charaters and syllables as a column
-            time.sleep(30)
+            time.sleep(10)
     except:
         print("There was an error while accessing this page")
         continue

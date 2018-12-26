@@ -104,7 +104,7 @@ for entry in extracted_content:
 
 
 rows = final_content
-del final_content[-1]
+del final_content[-2]
 
 with open("C:\myanmar-website-crawlers\\voa_data.csv", "w", encoding='utf-8') as WR:
     writer = csv.writer(WR)
