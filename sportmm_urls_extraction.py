@@ -12,7 +12,7 @@ headers = {'User-Agent' : str(ua.random)}
 
 NoneType = type(None) # for 'NoneType' Specific error avoidance
 
-url_format = "http://mizzimaburmese.com" # for concatenation
+# url_format = "http://mizzimaburmese.com" # for concatenation
 
 page_counter = 0
 
@@ -88,7 +88,7 @@ for i in range(0,516):
                 # Need to add [] for item because without it,
                 writer.writerow(row)
                 # the writer function will store each charaters and syllables as a column
-        time.sleep(30)
+        time.sleep(60)
     except:
         print("There was an error while accessing this page")
         continue

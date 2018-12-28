@@ -18,7 +18,7 @@ url_format = "http://mizzimaburmese.com" # for concatenation
 
 page_counter = 0
 
-for i in range(0,49):
+for i in range(0,8):
 
     try:
         
@@ -30,7 +30,7 @@ for i in range(0,49):
 
          # Put the desired url or website into the variable
         # my_url = "http://mizzimaburmese.com/news/local?page="+str(i)
-        my_url = "http://mizzimaburmese.com/business/domestic?page="+str(i)
+        my_url = "http://mizzimaburmese.com/business/international?page="+str(i)
 
         page_counter += 1
 

@@ -1,10 +1,13 @@
 import random
 import csv
 list=[]
-for i in range(1000):
-          r=random.randint(1000,2000)
-          if r not in list: 
-                list.append(r)
+count = 0
+for i in range(5000):
+      r=random.randint(0,5000)
+      if r not in list: 
+            list.append(r)
+      count += 1
+      print(count)
 print(list)                
                 #with open("C:\myanmar-website-crawlers\data.csv", "a", encoding='utf-8') as WR:
                     #writer = csv.writer(WR)
